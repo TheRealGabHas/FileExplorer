@@ -8,9 +8,10 @@ APP_WIDTH = 720
 APP_HEIGHT = 480
 ICON_DIR = "#{Dir.pwd}/assets/icons"
 ICON_BASE_NAME = "folder-icon"
+ICON_SIZES = [16, 32, 64, 128]
 
 icons = []
-[16, 32, 128].each do |size|
+ICON_SIZES.each do |size|
   icons << GdkPixbuf::Pixbuf.new(file: "#{ICON_DIR}/folder-icon-#{size}.png")
 end
 
