@@ -11,3 +11,9 @@ The goal of this project is to learn Ruby.
 - [`config.yml`](config.yml): Configuration option for the file explorer
 - [`README.md`](README.md): The current file you are reading, detailing the project
 - [`assets`](assets): A folder containing the project resources (i.e. icon, font...) 
+
+
+## Credits
+
+Icons:
+- [Folder](assets/icons/folder-icon-128.png) is from [Freepik](https://www.flaticon.com/authors/freepik)
