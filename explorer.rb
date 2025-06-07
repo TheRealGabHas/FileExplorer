@@ -47,7 +47,7 @@ class Explorer
   end
 
   def chdir(next_path:)
-    if File.exist?(next_path)
+    if File.exist?(next_path) && File.ftype(next_path) == "directory"
       if @configuration[:keep_history]
         @history << @current_path  # Store the last path
         if @history.length > @configuration[:history_retention]

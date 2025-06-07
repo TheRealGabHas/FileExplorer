@@ -22,15 +22,15 @@ ICON_SIZES.each { |size| icons << GdkPixbuf::Pixbuf.new(file: "#{ICON_DIR}/folde
 
 explorer = Explorer.new(path: APP_START_DIR)
 
-window = Gtk::Window.new(:toplevel)
-window.title = APP_NAME
+$window = Gtk::Window.new(:toplevel)
+$window.title = APP_NAME
 
 # Application size
-window.set_size_request(APP_MIN_WIDTH, APP_MIN_HEIGHT)
-window.set_default_size(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT)
+$window.set_size_request(APP_MIN_WIDTH, APP_MIN_HEIGHT)
+$window.set_default_size(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT)
 
-window.set_icon_list(icons)
-window.signal_connect("destroy") { Gtk.main_quit }
+$window.set_icon_list(icons)
+$window.signal_connect("destroy") { Gtk.main_quit }
 
 def update_file_list(ex, container)
   # Remove the file list
@@ -69,6 +69,8 @@ def update_file_list(ex, container)
   scroll_view.add(file_box)
   container.pack_start(scroll_view, expand: true, fill: true, padding: 0)
   container.show_all
+
+  $window.title = "#{APP_NAME} - #{ex.current_path}"
 end
 
 app_box = Gtk::Box.new(:vertical)
@@ -124,7 +126,7 @@ menubar.append(menubar_item_settings)
 
 update_file_list(explorer, main_box)  # The initial displaying of files
 
-window.add(app_box)
+$window.add(app_box)
 
-window.show_all
+$window.show_all
 Gtk.main
