@@ -31,6 +31,8 @@ class Explorer
         size = File.size(full_file_path)
         if @configuration[:format_filesize]
           size = format_size(size)
+        else
+          size = "#{size} o"
         end
 
         entries << {
@@ -59,6 +61,13 @@ class Explorer
   end
 
   def format_size(number)
-    number
+    units = ["", "K", "M", "G", "T"]
+    i = 0
+    number = number.to_f
+    while (number >= 1024) && (i < units.length - 1)
+      i += 1
+      number = number / 1024
+    end
+    "#{'%.1f' % number} #{units[i]}o"
   end
 end

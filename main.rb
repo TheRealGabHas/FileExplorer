@@ -53,7 +53,7 @@ def update_file_list(ex, container)
     grid = Gtk::Grid.new
     grid.set_column_homogeneous(true)
     grid.attach(Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0), 0, 0, 1, 1)
-    grid.attach(Gtk::Label.new("\t#{entry[:size]} o").set_xalign(0.0), 1, 0, 1, 1)
+    grid.attach(Gtk::Label.new("\t#{entry[:size]}").set_xalign(0.0), 1, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:type]}").set_xalign(0.0), 2, 0, 1, 1)
     file_box.add(grid)
   end
@@ -92,7 +92,23 @@ toggle_hidden_files.signal_connect "activate" do
   update_file_list(explorer, main_box)
 end
 
+toggle_history_view = Gtk::CheckMenuItem.new(label: "History")
+toggle_history_view.set_active(true)  # This setting is enabled by default
+toggle_history_view.signal_connect "activate" do
+  explorer.configuration[:keep_history] = !explorer.configuration[:keep_history]
+  puts "Keep history : #{explorer.configuration[:keep_history]}"
+end
+
+toggle_filesize_formating = Gtk::CheckMenuItem.new(label: "Format filesize")
+toggle_filesize_formating.set_active(true)  # This setting is enabled by default
+toggle_filesize_formating.signal_connect "activate" do
+  explorer.configuration[:format_filesize] = !explorer.configuration[:format_filesize]
+  update_file_list(explorer, main_box)
+end
+
 settings_submenu.append(toggle_hidden_files)
+settings_submenu.append(toggle_history_view)
+settings_submenu.append(toggle_filesize_formating)
 menubar_item_settings.set_submenu(settings_submenu)
 # End of the settings menu and submenu
 
