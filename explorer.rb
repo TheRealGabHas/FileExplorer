@@ -11,11 +11,14 @@ class Explorer
   def listdir(show_hidden: false)
     entries = []
     Dir.entries(@current_path).sort!.each do |entry|
-      entries << {
-        :filename => entry,
-        :size => File.size(entry),  # file size in byte
-        :type => File.ftype(entry)
-      }
+      full_file_path = "#{@current_path}/#{entry}"
+      if File.exist?(full_file_path)
+        entries << {
+          :filename => entry,
+          :size => File.size(full_file_path),  # file size in byte
+          :type => File.ftype(full_file_path)  # directory of file (mainly)
+        }
+      end
     end
 
     # Remove the file that starts with a dot
@@ -28,5 +31,6 @@ class Explorer
 
   def chdir(next_path:)
     @current_path = next_path if File.exist?(next_path)
+    @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
   end
 end
