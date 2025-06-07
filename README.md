@@ -7,6 +7,7 @@ The goal of this project is to learn Ruby.
 ## Project structure
 
 - [`main.rb`](main.rb)
+- [`explorer.rb`](explorer.rb): The file explorer class and methods
 - [`Gemfile`](Gemfile): The file listing dependencies
 - [`config.yml`](config.yml): Configuration option for the file explorer
 - [`README.md`](README.md): The current file you are reading, detailing the project
