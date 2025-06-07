@@ -42,6 +42,14 @@ def update_file_list(ex, container)
   scroll_view.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
 
   file_box = Gtk::Box.new(:vertical)
+  # Header of the table
+  grid = Gtk::Grid.new
+  grid.set_column_homogeneous(true)
+  grid.attach(Gtk::Label.new("Filename"), 0, 0, 1, 1)
+  grid.attach(Gtk::Label.new("Size"), 1, 0, 1, 1)
+  grid.attach(Gtk::Label.new("Type"), 2, 0, 1, 1)
+  container.add(grid)
+
   # Listing the files/ directories
   max_allowed_len = 20
   ex.listdir().each do |entry|
