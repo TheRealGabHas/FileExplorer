@@ -2,6 +2,7 @@
 
 class Explorer
   attr_reader :current_path
+  attr_reader :history
 
   def initialize(path:)
     @current_path = path
@@ -30,7 +31,10 @@ class Explorer
   end
 
   def chdir(next_path:)
-    @current_path = next_path if File.exist?(next_path)
-    @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
+    if File.exist?(next_path)
+      @history << @current_path  # Store the last path
+      @current_path = next_path
+      @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
+    end
   end
 end
