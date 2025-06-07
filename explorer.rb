@@ -61,6 +61,7 @@ class Explorer
   end
 
   def format_size(number)
+    return "#{number} o" if number < 1024
     units = ["", "K", "M", "G", "T"]
     i = 0
     number = number.to_f
