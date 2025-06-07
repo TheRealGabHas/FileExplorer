@@ -44,7 +44,7 @@ def update_file_list(ex, container)
   file_box = Gtk::Box.new(:vertical)
   # Listing the files/ directories
   max_allowed_len = 20
-  ex.listdir(show_hidden: true).each do |entry|
+  ex.listdir().each do |entry|
     # Crop the longest names
     if entry[:filename].length > max_allowed_len
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
@@ -78,7 +78,27 @@ end
 app_box.pack_start(current_path_entry, expand: false, fill: false, padding: 0)  # Packing the search bar
 app_box.pack_start(main_box, expand: true, fill: true, padding: 0)  # Packing the file list container
 
-update_file_list(explorer, main_box)
+# The bottom menu bar
+menubar = Gtk::MenuBar.new
+app_box.pack_start(menubar, expand: false, fill: false, padding: 0)
+
+menubar_item_settings = Gtk::MenuItem.new(label: "Settings")
+
+# The settings menu and submenu
+settings_submenu = Gtk::Menu.new
+toggle_hidden_files = Gtk::CheckMenuItem.new(label: "Show hidden files")
+toggle_hidden_files.signal_connect "activate" do
+  explorer.configuration[:show_hidden] = !explorer.configuration[:show_hidden]  # Invert the current setting
+  update_file_list(explorer, main_box)
+end
+
+settings_submenu.append(toggle_hidden_files)
+menubar_item_settings.set_submenu(settings_submenu)
+# End of the settings menu and submenu
+
+menubar.append(menubar_item_settings)
+
+update_file_list(explorer, main_box)  # The initial displaying of files
 
 window.add(app_box)
 

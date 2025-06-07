@@ -3,13 +3,18 @@
 class Explorer
   attr_reader :current_path
   attr_reader :history
+  attr_reader :configuration
+  attr_writer :configuration
 
   def initialize(path:)
     @current_path = path
     @history = []
+    @configuration = {
+      :show_hidden => false,  # Toggle the display of hidden files (starting with a dot)
+    }
   end
 
-  def listdir(show_hidden: false)
+  def listdir
     entries = []
     Dir.entries(@current_path).sort!.each do |entry|
       full_file_path = "#{@current_path}/#{entry}"
@@ -23,7 +28,7 @@ class Explorer
     end
 
     # Remove the file that starts with a dot
-    unless show_hidden
+    unless @configuration[:show_hidden]
       entries.filter! {|entry| !entry[:filename].start_with?(".")}
     end
 
