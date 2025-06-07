@@ -29,9 +29,9 @@ ruby main.rb
 
 ## Project structure
 
-- [`main.rb`](main.rb): Entrypoint for the application
+- [`main.rb`](main.rb): Entrypoint for the application. Contains the code description of the UI
 - [`explorer.rb`](explorer.rb): The file explorer class and methods
-- [`Gemfile`](Gemfile): The file listing dependencies
+- [`Gemfile`](Gemfile): The file that contains the project dependencies
 - [`config.yml`](config.yml): Configuration option for the file explorer
 - [`README.md`](README.md): The current file you are reading, detailing the project
 - [`assets`](assets): A folder containing the project resources (i.e. icon, font...) 
