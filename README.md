@@ -4,9 +4,32 @@ This application is a simple file explorer made in Ruby. It relies on GTK3 for t
 
 The goal of this project is to learn Ruby.
 
+
+## Requirements
+
+The project is built with Ruby:
+- [Ruby 3.3.8](https://www.ruby-lang.org/en/downloads/)
+- [GTK-3](https://docs.gtk.org/gtk3/)
+
+
+## How to run this project ?
+
+The first step is to install Ruby : see the [official website](https://www.ruby-lang.org/en/downloads/).
+
+Then use the `gem` command to install GTK 3:
+```shell
+gem install gtk3
+```
+
+Finally, the application can be executed with the following command:
+```shell
+ruby main.rb
+```
+
+
 ## Project structure
 
-- [`main.rb`](main.rb)
+- [`main.rb`](main.rb): Entrypoint for the application
 - [`explorer.rb`](explorer.rb): The file explorer class and methods
 - [`Gemfile`](Gemfile): The file listing dependencies
 - [`config.yml`](config.yml): Configuration option for the file explorer
