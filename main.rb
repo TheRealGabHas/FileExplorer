@@ -34,11 +34,7 @@ window.signal_connect("destroy") { Gtk.main_quit }
 
 def update_file_list(ex, container)
   # Remove the file list
-  container.children.each do |child|
-    unless child.is_a?(Gtk::Entry)  # Avoid removing the search bar
-      container.remove(child)
-    end
-  end
+  container.children.each { | child | container.remove(child) }
 
   # The scrollable window that will contain the list of files
   scroll_view = Gtk::ScrolledWindow.new
@@ -47,7 +43,7 @@ def update_file_list(ex, container)
 
   file_box = Gtk::Box.new(:vertical)
   # Listing the files/ directories
-  max_allowed_len = 40
+  max_allowed_len = 20
   ex.listdir(show_hidden: true).each do |entry|
     # Crop the longest names
     if entry[:filename].length > max_allowed_len
@@ -59,15 +55,16 @@ def update_file_list(ex, container)
     grid.attach(Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0), 0, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:size]} o").set_xalign(0.0), 1, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:type]}").set_xalign(0.0), 2, 0, 1, 1)
-    file_box.pack_start(grid, expand: false, fill: false, padding: 2)
+    file_box.add(grid)
   end
 
   scroll_view.add(file_box)
-  container.add(scroll_view)
+  container.pack_start(scroll_view, expand: true, fill: true, padding: 0)
   container.show_all
 end
 
-main_box = Gtk::Box.new(:vertical, 5)
+app_box = Gtk::Box.new(:vertical)
+main_box = Gtk::Box.new(:vertical, 5)  # File/ directory list container
 
 # The search bar
 current_path_entry = Gtk::Entry.new.set_text(explorer.current_path)
@@ -78,10 +75,12 @@ current_path_entry.signal_connect("key-press-event") do |widget, event|
   end
 end
 
-main_box.pack_start(current_path_entry, expand: false, fill: false, padding: 5)
+app_box.pack_start(current_path_entry, expand: false, fill: false, padding: 0)  # Packing the search bar
+app_box.pack_start(main_box, expand: true, fill: true, padding: 0)  # Packing the file list container
+
 update_file_list(explorer, main_box)
 
-window.add(main_box)
+window.add(app_box)
 
 window.show_all
 Gtk.main
