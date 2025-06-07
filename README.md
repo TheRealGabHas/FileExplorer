@@ -37,6 +37,24 @@ ruby main.rb
 - [`assets`](assets): A folder containing the project resources (i.e. icon, font...) 
 
 
+## Features
+
+Here is a list of features that are supported by this application
+- [x] Enumerates files and folder
+- [ ] Navigation between directories
+  - [x] Search bar
+  - [ ] Previous/ Next button
+  - [ ] History
+  - [ ] Click to explore a file directory
+  - [ ] Copy current path to clipboard (from search bar)
+- [ ] Formating file size to be more humanly-readable
+- [x] Displaying hidden files
+- [ ] Selecting information to display via toggle (size, type, creation date...)
+- [ ] Advanced file option
+  - [ ] Copy file path to clipboard
+  - [ ] Copy file name to clipboard
+- [ ] Icon next to filename
+
 ## Credits
 
 Icons:
