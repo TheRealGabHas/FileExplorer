@@ -65,7 +65,7 @@ def update_app(ex, container, search_bar)
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
     end
 
-    name_field = Gtk::Label.new("\t#{entry[:filename]}")
+    name_field = Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0)
     name_field.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
 
     if entry[:type] == "file"
@@ -75,9 +75,13 @@ def update_app(ex, container, search_bar)
 
     # Make the label clickable if it's a directory
     if entry[:type] == "directory"
-      name_field.set_text("\t📁 #{entry[:filename]}")
-      name_field.style_context.add_class("directory")
-      name_field.set_has_window(true)
+      name_field = Gtk::EventBox.new  # A box is needed to handle the event. The label is placed inside.
+
+      name_label = Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0)
+      name_label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+      name_label.set_text("\t📁 #{entry[:filename]}")
+      name_label.style_context.add_class("directory")
+
       name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
       name_field.signal_connect "button-press-event" do |widget, event|
@@ -86,6 +90,7 @@ def update_app(ex, container, search_bar)
           update_app(ex, container, search_bar)
         end
       end
+      name_field.add(name_label)
     end
     if entry[:type] == "link"
       name_field.set_text("\t🔗 #{entry[:filename]}")
@@ -94,7 +99,7 @@ def update_app(ex, container, search_bar)
 
     grid = Gtk::Grid.new
     grid.set_column_homogeneous(true)
-    grid.attach(name_field.set_xalign(0.0), 0, 0, 1, 1)
+    grid.attach(name_field, 0, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:size]}").set_xalign(0.0), 1, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:date]}"), 2, 0, 1, 1)
     file_box.add(grid)
