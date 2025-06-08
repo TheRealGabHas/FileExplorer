@@ -92,7 +92,7 @@ main_box = Gtk::Box.new(:vertical, 5)  # File/ directory list container
 
 # The search bar
 current_path_entry = Gtk::Entry.new.set_text(explorer.current_path)
-current_path_entry.signal_connect("key-press-event") do |widget, event|
+current_path_entry.signal_connect "key-press-event" do |widget, event|
   if event.keyval == Gdk::Keyval::KEY_Return
     explorer.chdir(next_path: current_path_entry.text)  # Set the new path
     update_app(explorer, main_box, current_path_entry)  # Update the displayed elements to match the current directory

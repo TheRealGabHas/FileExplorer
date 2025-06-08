@@ -3,8 +3,7 @@
 class Explorer
   attr_reader :current_path
   attr_reader :history
-  attr_reader :configuration
-  attr_writer :configuration
+  attr_accessor :configuration
 
   def initialize(path:)
     @current_path = path
@@ -27,18 +26,18 @@ class Explorer
 
       full_file_path = "#{@current_path}/#{entry}"
       if File.exist?(full_file_path)
+        ftype = File.ftype(full_file_path)
 
-        size = File.size(full_file_path)
-        if @configuration[:format_filesize]
-          size = format_size(size)
-        else
-          size = "#{size} o"
-        end
+        # Compute the size of the content if the entry is a directory
+        ftype == "directory" ? size = compute_dir_size(path: full_file_path) : size = File.size(full_file_path)
+
+        # Format the size label
+        @configuration[:format_filesize] ? size = format_size(size) : size = "#{size} o"
 
         entries << {
           :filename => entry,
           :size => size,  # file size in byte
-          :type => File.ftype(full_file_path),  # directory of file (mainly)
+          :type => ftype,  # directory of file (mainly)
           :date => File.ctime(full_file_path).ctime,  # creation date
         }
       end
@@ -71,5 +70,18 @@ class Explorer
       number = number / 1024
     end
     "#{'%.1f' % number} #{units[i]}o"
+  end
+
+  def compute_dir_size(path:, limit: 3)
+    # Estimate the size of the content inside a folder
+    # Also explore subfolders, up to 3 layers deep
+    size = 0
+    Dir.entries(path).each do |entry|
+      next if %w[. ..].include?(entry)  # ignore those special files
+
+      p = "#{path}/#{entry}"
+      File.directory?(p) && limit > 0 ? size += compute_dir_size(path: p, limit: limit-1) : size += File.size(p)
+    end
+    size
   end
 end
