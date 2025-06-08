@@ -129,9 +129,17 @@ toggle_filesize_formating.signal_connect "activate" do
   update_app(explorer, main_box, current_path_entry)
 end
 
+toggle_size_estimation = Gtk::CheckMenuItem.new(label: "Compute folder size")
+toggle_size_estimation.set_active(false)  # This setting is disabled by default
+toggle_size_estimation.signal_connect "activate" do
+  explorer.configuration[:estimate_folder_size] = !explorer.configuration[:estimate_folder_size]
+  update_app(explorer, main_box, current_path_entry)
+end
+
 settings_submenu.append(toggle_hidden_files)
 settings_submenu.append(toggle_history_view)
 settings_submenu.append(toggle_filesize_formating)
+settings_submenu.append(toggle_size_estimation)
 menubar_item_settings.set_submenu(settings_submenu)
 # End of the settings menu and submenu
 

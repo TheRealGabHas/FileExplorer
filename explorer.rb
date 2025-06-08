@@ -13,6 +13,7 @@ class Explorer
       :keep_history => true,  # Toggle memorization of the last viewed folders
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
+      :estimate_folder_size => false,  # Wether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
     }
   end
 
@@ -28,8 +29,13 @@ class Explorer
       if File.exist?(full_file_path)
         ftype = File.ftype(full_file_path)
 
-        # Compute the size of the content if the entry is a directory
-        ftype == "directory" ? size = compute_dir_size(path: full_file_path) : size = File.size(full_file_path)
+        # Compute the size of the content if the entry is a directory and the `estimate_folder_size` setting is enabled
+        size = File.size(full_file_path)
+        if ftype == "directory"
+          if @configuration[:estimate_folder_size]
+            size = compute_dir_size(path: full_file_path)
+          end
+        end
 
         # Format the size label
         @configuration[:format_filesize] ? size = format_size(size) : size = "#{size} o"
