@@ -13,7 +13,7 @@ class Explorer
       :keep_history => true,  # Toggle memorization of the last viewed folders
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
-      :estimate_folder_size => false,  # Wether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
+      :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
     }
   end
 
