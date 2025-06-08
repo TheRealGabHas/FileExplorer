@@ -54,16 +54,16 @@ class Explorer
     entries
   end
 
-  def chdir(next_path:)
+  def chdir(next_path:, ignore_history: false)
+    # The `ignore_history` argument is set to true to avoid logging the visited path
     if File.exist?(next_path) && File.ftype(next_path) == "directory"
-      if @configuration[:keep_history]
+      if @configuration[:keep_history] && !ignore_history
         @history << @current_path  # Store the last path
         if @configuration[:history_retention] < @history.length
           @history = @history[1..]
         end
-        @history_pos += 1 if @history_pos < @history.length
       end
-
+      @history_pos += 1 if @history_pos < @history.length
       @current_path = next_path
       @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
     end
