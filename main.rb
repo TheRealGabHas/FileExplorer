@@ -65,10 +65,12 @@ def update_app(ex, container, search_bar)
       name_field.set_has_window(true)
       name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
-      name_field.signal_connect "button-press-event" do
-        ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
-        update_app(ex, container, search_bar)
-        search_bar.text = ex.current_path
+      name_field.signal_connect "button-press-event" do |widget, event|
+        if event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS  # If the folder is double-clicked, explore it
+          ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
+          update_app(ex, container, search_bar)
+          search_bar.text = ex.current_path
+        end
       end
     end
 
