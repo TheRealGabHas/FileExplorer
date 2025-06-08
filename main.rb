@@ -52,7 +52,7 @@ def update_app(ex, container, search_bar)
 
   # Listing the files/ directories
   max_allowed_len = 20
-  ex.listdir().each do |entry|
+  ex.listdir.each do |entry|
     # Crop the longest names
     if entry[:filename].length > max_allowed_len
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
