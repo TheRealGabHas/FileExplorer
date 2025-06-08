@@ -3,11 +3,13 @@
 class Explorer
   attr_reader :current_path
   attr_reader :history
+  attr_accessor :history_pos
   attr_accessor :configuration
 
   def initialize(path:)
     @current_path = path
-    @history = []
+    @history = [@current_path]
+    @history_pos = 0
     @configuration = {
       :show_hidden => false,  # Toggle the display of hidden files (starting with a dot)
       :keep_history => true,  # Toggle memorization of the last viewed folders
@@ -59,6 +61,7 @@ class Explorer
         if @configuration[:history_retention] < @history.length
           @history = @history[1..]
         end
+        @history_pos += 1 if @history_pos < @history.length
       end
 
       @current_path = next_path

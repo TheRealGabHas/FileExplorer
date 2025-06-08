@@ -33,6 +33,9 @@ $window.set_icon_list(icons)
 $window.signal_connect("destroy") { Gtk.main_quit }
 
 def update_app(ex, container, search_bar)
+  # This function updates the displayed content of the explorer (the list of files/ folders)
+  # it also updates the search bar content and window title
+
   # Remove the file list
   container.children.each { | child | container.remove(child) }
 
@@ -69,7 +72,6 @@ def update_app(ex, container, search_bar)
         if event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS  # If the folder is double-clicked, explore it
           ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
           update_app(ex, container, search_bar)
-          search_bar.text = ex.current_path
         end
       end
     end
@@ -87,6 +89,7 @@ def update_app(ex, container, search_bar)
   container.show_all
 
   $window.title = "#{APP_NAME} - #{ex.current_path}"
+  search_bar.text = ex.current_path
 end
 
 app_box = Gtk::Box.new(:vertical)
@@ -145,7 +148,26 @@ settings_submenu.append(toggle_size_estimation)
 menubar_item_settings.set_submenu(settings_submenu)
 # End of the settings menu and submenu
 
+# Previous/ Next visited path menu
+menubar_item_history_p = Gtk::MenuItem.new(label: "<")
+menubar_item_history_n = Gtk::MenuItem.new(label: ">")
+
+menubar_item_history_p.signal_connect "activate" do
+  if explorer.history.length > 0
+    explorer.chdir(next_path: explorer.history[explorer.history_pos-1])
+    update_app(explorer, main_box, current_path_entry)
+  end
+end
+
+menubar_item_history_n.signal_connect "activate" do
+
+end
+
+# End of the Previous/ Next visited path menu
+
 menubar.append(menubar_item_settings)
+menubar.append(menubar_item_history_p)
+menubar.append(menubar_item_history_n)
 
 update_app(explorer, main_box, current_path_entry)  # The initial displaying of files
 
