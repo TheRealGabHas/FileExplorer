@@ -55,6 +55,7 @@ Here is a list of features that are supported by this application
   - [ ] Copy file name to clipboard
 - [ ] Icon next to filename
 
+
 ## Credits
 
 Icons:
