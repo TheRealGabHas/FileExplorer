@@ -45,7 +45,7 @@ Here is a list of features that are supported by this application
   - [x] Search bar
   - [ ] Previous/ Next button
   - [ ] History
-  - [ ] Click to explore a file directory
+  - [x] Click to explore a file directory
   - [ ] Copy current path to clipboard (from search bar)
 - [ ] Formating file size to be more humanly-readable
 - [x] Displaying hidden files
