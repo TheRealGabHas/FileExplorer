@@ -38,7 +38,8 @@ class Explorer
         entries << {
           :filename => entry,
           :size => size,  # file size in byte
-          :type => File.ftype(full_file_path)  # directory of file (mainly)
+          :type => File.ftype(full_file_path),  # directory of file (mainly)
+          :date => File.ctime(full_file_path).ctime,  # creation date
         }
       end
     end

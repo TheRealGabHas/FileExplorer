@@ -32,7 +32,7 @@ $window.set_default_size(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT)
 $window.set_icon_list(icons)
 $window.signal_connect("destroy") { Gtk.main_quit }
 
-def update_file_list(ex, container)
+def update_app(ex, container, search_bar)
   # Remove the file list
   container.children.each { | child | container.remove(child) }
 
@@ -47,7 +47,7 @@ def update_file_list(ex, container)
   grid.set_column_homogeneous(true)
   grid.attach(Gtk::Label.new("Filename"), 0, 0, 1, 1)
   grid.attach(Gtk::Label.new("Size"), 1, 0, 1, 1)
-  grid.attach(Gtk::Label.new("Type"), 2, 0, 1, 1)
+  grid.attach(Gtk::Label.new("Created"), 2, 0, 1, 1)
   container.add(grid)
 
   # Listing the files/ directories
@@ -58,11 +58,25 @@ def update_file_list(ex, container)
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
     end
 
+    name_field = Gtk::Label.new("\t#{entry[:filename]}")
+    # Add a button to explore the folder if the entry is a directory
+    if entry[:type] == "directory"
+      name_field.set_text("\t#{entry[:filename]} ▶️")
+      name_field.set_has_window(true)
+      name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
+
+      name_field.signal_connect "button-press-event" do
+        ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
+        update_app(ex, container, search_bar)
+        search_bar.text = ex.current_path
+      end
+    end
+
     grid = Gtk::Grid.new
     grid.set_column_homogeneous(true)
-    grid.attach(Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0), 0, 0, 1, 1)
+    grid.attach(name_field.set_xalign(0.0), 0, 0, 1, 1)
     grid.attach(Gtk::Label.new("\t#{entry[:size]}").set_xalign(0.0), 1, 0, 1, 1)
-    grid.attach(Gtk::Label.new("\t#{entry[:type]}").set_xalign(0.0), 2, 0, 1, 1)
+    grid.attach(Gtk::Label.new("\t#{entry[:date]}"), 2, 0, 1, 1)
     file_box.add(grid)
   end
 
@@ -81,7 +95,7 @@ current_path_entry = Gtk::Entry.new.set_text(explorer.current_path)
 current_path_entry.signal_connect("key-press-event") do |widget, event|
   if event.keyval == Gdk::Keyval::KEY_Return
     explorer.chdir(next_path: current_path_entry.text)  # Set the new path
-    update_file_list(explorer, main_box)  # Update the displayed elements to match the current directory
+    update_app(explorer, main_box, current_path_entry)  # Update the displayed elements to match the current directory
   end
 end
 
@@ -99,21 +113,20 @@ settings_submenu = Gtk::Menu.new
 toggle_hidden_files = Gtk::CheckMenuItem.new(label: "Show hidden files")
 toggle_hidden_files.signal_connect "activate" do
   explorer.configuration[:show_hidden] = !explorer.configuration[:show_hidden]  # Invert the current setting
-  update_file_list(explorer, main_box)
+  update_app(explorer, main_box, current_path_entry)
 end
 
 toggle_history_view = Gtk::CheckMenuItem.new(label: "History")
 toggle_history_view.set_active(true)  # This setting is enabled by default
 toggle_history_view.signal_connect "activate" do
   explorer.configuration[:keep_history] = !explorer.configuration[:keep_history]
-  puts "Keep history : #{explorer.configuration[:keep_history]}"
 end
 
 toggle_filesize_formating = Gtk::CheckMenuItem.new(label: "Format filesize")
 toggle_filesize_formating.set_active(true)  # This setting is enabled by default
 toggle_filesize_formating.signal_connect "activate" do
   explorer.configuration[:format_filesize] = !explorer.configuration[:format_filesize]
-  update_file_list(explorer, main_box)
+  update_app(explorer, main_box, current_path_entry)
 end
 
 settings_submenu.append(toggle_hidden_files)
@@ -124,7 +137,7 @@ menubar_item_settings.set_submenu(settings_submenu)
 
 menubar.append(menubar_item_settings)
 
-update_file_list(explorer, main_box)  # The initial displaying of files
+update_app(explorer, main_box, current_path_entry)  # The initial displaying of files
 
 $window.add(app_box)
 
