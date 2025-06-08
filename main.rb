@@ -32,6 +32,10 @@ $window.set_default_size(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT)
 $window.set_icon_list(icons)
 $window.signal_connect("destroy") { Gtk.main_quit }
 
+$css_provider = Gtk::CssProvider.new
+css_data = open("./assets/style/main.css", "r").readlines.join
+$css_provider.load_from_data(css_data)
+
 def update_app(ex, container, search_bar)
   # This function updates the displayed content of the explorer (the list of files/ folders)
   # it also updates the search bar content and window title
@@ -62,9 +66,17 @@ def update_app(ex, container, search_bar)
     end
 
     name_field = Gtk::Label.new("\t#{entry[:filename]}")
-    # Add a button to explore the folder if the entry is a directory
+    name_field.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+
+    if entry[:type] == "file"
+      name_field.set_text("\t📄 #{entry[:filename]}")
+      name_field.style_context.add_class("file")
+    end
+
+    # Make the label clickable if it's a directory
     if entry[:type] == "directory"
-      name_field.set_text("\t#{entry[:filename]} ▶️")
+      name_field.set_text("\t📁 #{entry[:filename]}")
+      name_field.style_context.add_class("directory")
       name_field.set_has_window(true)
       name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
@@ -74,6 +86,10 @@ def update_app(ex, container, search_bar)
           update_app(ex, container, search_bar)
         end
       end
+    end
+    if entry[:type] == "link"
+      name_field.set_text("\t🔗 #{entry[:filename]}")
+      name_field.style_context.add_class("link")
     end
 
     grid = Gtk::Grid.new
@@ -149,20 +165,23 @@ menubar_item_settings.set_submenu(settings_submenu)
 # End of the settings menu and submenu
 
 # Previous/ Next visited path menu
-menubar_item_history_p = Gtk::MenuItem.new(label: "<")
-menubar_item_history_n = Gtk::MenuItem.new(label: ">")
+menubar_item_history_p = Gtk::MenuItem.new(label: "<-")
+menubar_item_history_n = Gtk::MenuItem.new(label: "->")
 
 menubar_item_history_p.signal_connect "activate" do
   if explorer.history.length > 0
-    explorer.chdir(next_path: explorer.history[explorer.history_pos-1])
+    explorer.chdir(next_path: explorer.history[explorer.history_pos-1], ignore_history: true)
     update_app(explorer, main_box, current_path_entry)
   end
 end
 
 menubar_item_history_n.signal_connect "activate" do
-
+  # FIXME
+  unless explorer.history[explorer.history_pos+1].nil?
+    explorer.chdir(next_path: explorer.history[explorer.history_pos+1], ignore_history: true)
+    update_app(explorer, main_box, current_path_entry)
+  end
 end
-
 # End of the Previous/ Next visited path menu
 
 menubar.append(menubar_item_settings)
