@@ -34,8 +34,13 @@ ruby main.rb
 - [`Gemfile`](Gemfile): The file that contains the project dependencies
 - [`config.yml`](config.yml): Configuration option for the file explorer
 - [`README.md`](README.md): The current file you are reading, detailing the project
-- [`assets`](assets): A folder containing the project resources (i.e. icon, font...) 
+- [`assets`](assets): A folder containing the project resources (i.e. icon, css stylesheet, font...) 
 
+
+## Images
+
+Here is the current look of the application:
+![Software preview](assets/screens/preview-1.png)
 
 ## Features
 
