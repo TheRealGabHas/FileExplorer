@@ -3,6 +3,7 @@
 require "gtk3"
 require_relative "explorer"
 
+Gtk.init
 
 PACKAGE_NAME = "fr.gabhas.explorer"
 
@@ -35,6 +36,8 @@ $window.signal_connect("destroy") { Gtk.main_quit }
 $css_provider = Gtk::CssProvider.new
 css_data = open("./assets/style/main.css", "r").readlines.join
 $css_provider.load_from_data(css_data)
+
+$clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
 def update_app(ex, container, search_bar)
   # This function updates the displayed content of the explorer (the list of files/ folders)
@@ -128,6 +131,8 @@ app_box = Gtk::Box.new(:vertical)
 main_box = Gtk::Box.new(:vertical, 5)  # File/ directory list container
 
 # The search bar
+search_bar = Gtk::Box.new(:horizontal, 0)
+
 current_path_entry = Gtk::Entry.new.set_text(explorer.current_path)
 current_path_entry.signal_connect "key-press-event" do |_, event|
   if event.keyval == Gdk::Keyval::KEY_Return
@@ -136,7 +141,28 @@ current_path_entry.signal_connect "key-press-event" do |_, event|
   end
 end
 
-app_box.pack_start(current_path_entry, expand: false, fill: false, padding: 0)  # Packing the search bar
+previous_btn = Gtk::Button.new(label: "⬅️")
+copy_btn = Gtk::Button.new(label: "📋")
+
+previous_btn.signal_connect "button-press-event" do
+  upper_dir = explorer.current_path.split("/")
+  if upper_dir.length > 1
+    upper_dir = upper_dir[0..(upper_dir.length - 2)].join("/")
+    explorer.chdir(next_path: upper_dir)
+    update_app(explorer, main_box, current_path_entry)
+  end
+end
+
+copy_btn.signal_connect "button-press-event" do
+  $clipboard.set_text(explorer.current_path)
+end
+
+search_bar.pack_start(current_path_entry, expand: true, fill: true, padding: 0)
+search_bar.pack_start(previous_btn, expand: false, fill: false, padding: 0)
+search_bar.pack_start(copy_btn, expand: false, fill: false, padding: 0)
+search_bar.show_all
+
+app_box.pack_start(search_bar, expand: false, fill: false, padding: 0)  # Packing the search bar
 app_box.pack_start(main_box, expand: true, fill: true, padding: 0)  # Packing the file list container
 
 # The bottom menu bar
