@@ -84,7 +84,7 @@ def update_app(ex, container, search_bar)
 
       name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
-      name_field.signal_connect "button-press-event" do |widget, event|
+      name_field.signal_connect "button-press-event" do |_, event|
         if event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS  # If the folder is double-clicked, explore it
           ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
           update_app(ex, container, search_bar)
@@ -92,6 +92,7 @@ def update_app(ex, container, search_bar)
       end
       name_field.add(name_label)
     end
+
     if entry[:type] == "link"
       name_field.set_text("\t🔗 #{entry[:filename]}")
       name_field.style_context.add_class("link")
@@ -118,7 +119,7 @@ main_box = Gtk::Box.new(:vertical, 5)  # File/ directory list container
 
 # The search bar
 current_path_entry = Gtk::Entry.new.set_text(explorer.current_path)
-current_path_entry.signal_connect "key-press-event" do |widget, event|
+current_path_entry.signal_connect "key-press-event" do |_, event|
   if event.keyval == Gdk::Keyval::KEY_Return
     explorer.chdir(next_path: current_path_entry.text)  # Set the new path
     update_app(explorer, main_box, current_path_entry)  # Update the displayed elements to match the current directory
