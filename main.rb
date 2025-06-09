@@ -231,8 +231,8 @@ end
 # End of the Previous/ Next visited path menu
 
 menubar.append(menubar_item_settings)
-menubar.append(menubar_item_history_p)
-menubar.append(menubar_item_history_n)
+# menubar.append(menubar_item_history_p)
+# menubar.append(menubar_item_history_n)
 
 update_app(explorer, main_box, current_path_entry)  # The initial displaying of files
 
