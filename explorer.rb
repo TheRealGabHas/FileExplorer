@@ -30,24 +30,29 @@ class Explorer
       full_file_path = "#{@current_path}/#{entry}"
       if File.exist?(full_file_path)
         ftype = File.ftype(full_file_path)
+        begin
 
-        # Compute the size of the content if the entry is a directory and the `estimate_folder_size` setting is enabled
-        size = File.size(full_file_path)
-        if ftype == "directory"
-          if @configuration[:estimate_folder_size]
-            size = compute_dir_size(path: full_file_path)
+          # Compute the size of the content if the entry is a directory and the `estimate_folder_size` setting is enabled
+          size = File.size(full_file_path)
+          if ftype == "directory"
+            if @configuration[:estimate_folder_size]
+              size = compute_dir_size(path: full_file_path)
+            end
           end
+
+          # Format the size label
+          @configuration[:format_filesize] ? size = format_size(size) : size = "#{size} o"
+
+          entries << {
+            :filename => entry,
+            :size => size,  # file size in byte
+            :type => ftype,  # directory of file (mainly)
+            :date => File.ctime(full_file_path).ctime,  # creation date
+          }
+
+        rescue => _
+          # Ignore unaccessible files
         end
-
-        # Format the size label
-        @configuration[:format_filesize] ? size = format_size(size) : size = "#{size} o"
-
-        entries << {
-          :filename => entry,
-          :size => size,  # file size in byte
-          :type => ftype,  # directory of file (mainly)
-          :date => File.ctime(full_file_path).ctime,  # creation date
-        }
       end
     end
 
