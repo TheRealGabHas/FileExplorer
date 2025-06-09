@@ -1,5 +1,10 @@
 * { margin: 0; }
 
+.title {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .file { }
 .directory { font-weight: bold; }
 .link { }
@@ -15,4 +20,8 @@ button {
 button:hover {
     background-color: slategray;
     color: honeydew;
+}
+
+menubar {
+    border-top: 1px solid slategray;
 }

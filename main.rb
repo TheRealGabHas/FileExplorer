@@ -51,12 +51,16 @@ def update_app(ex, container, search_bar)
   scroll_view.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
 
   file_box = Gtk::Box.new(:vertical)
-  # Header of the table
+  # Generate the header of the table
   grid = Gtk::Grid.new
   grid.set_column_homogeneous(true)
-  grid.attach(Gtk::Label.new("Filename"), 0, 0, 1, 1)
-  grid.attach(Gtk::Label.new("Size"), 1, 0, 1, 1)
-  grid.attach(Gtk::Label.new("Created"), 2, 0, 1, 1)
+
+  %w[Filename Size Created].each_with_index do |name, index|
+    label = Gtk::Label.new(name)
+    label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+    label.style_context.add_class("title")
+    grid.attach(label, index, 0, 1, 1)
+  end
   container.add(grid)
 
   # Listing the files/ directories
@@ -171,6 +175,7 @@ app_box.pack_start(main_box, expand: true, fill: true, padding: 0)  # Packing th
 
 # The bottom menu bar
 menubar = Gtk::MenuBar.new
+menubar.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
 app_box.pack_start(menubar, expand: false, fill: false, padding: 0)
 
 menubar_item_settings = Gtk::MenuItem.new(label: "Settings")
