@@ -34,8 +34,7 @@ $window.set_icon_list(icons)
 $window.signal_connect("destroy") { Gtk.main_quit }
 
 $css_provider = Gtk::CssProvider.new
-css_data = open("./assets/style/main.css", "r").readlines.join
-$css_provider.load_from_data(css_data)
+$css_provider.load(path: "./assets/style/main.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
@@ -143,6 +142,11 @@ end
 
 previous_btn = Gtk::Button.new(label: "⬅️")
 copy_btn = Gtk::Button.new(label: "📋")
+
+# Apply the style to the previous buttons
+[previous_btn, copy_btn].each do |btn|
+  btn.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+end
 
 previous_btn.signal_connect "button-press-event" do
   upper_dir = explorer.current_path.split("/")

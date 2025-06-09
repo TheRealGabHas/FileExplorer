@@ -1,3 +1,18 @@
-.file { background-color: lightgray; }
-.directory { background-color: lightyellow; }
-.link { background-color: lightgreen; }
+* { margin: 0; }
+
+.file { }
+.directory { font-weight: bold; }
+.link { }
+
+button {
+    background-image: none;
+    color: slategray;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin: 2px;
+}
+
+button:hover {
+    background-color: slategray;
+    color: honeydew;
+}
