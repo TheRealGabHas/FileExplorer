@@ -86,7 +86,17 @@ def update_app(ex, container, search_bar)
 
       name_field.signal_connect "button-press-event" do |_, event|
         if event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS  # If the folder is double-clicked, explore it
-          ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
+          if entry[:filename] == "."  # Special case: Stay in the current directory
+          elsif entry[:filename] == ".."  #Special case: Go to the previous directory in the path
+            upper_dir = ex.current_path.split("/")
+            if upper_dir.length > 1
+              upper_dir = upper_dir[0..(upper_dir.length - 2)].join("/")
+              ex.chdir(next_path: upper_dir)
+            end
+          else  # Move to the clicked directory normally
+            ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
+          end
+
           update_app(ex, container, search_bar)
         end
       end
