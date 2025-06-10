@@ -11,17 +11,17 @@
 
 button {
     background-image: none;
-    color: slategray;
+    color: rgb(112, 128, 144);
     border-radius: 5px;
     border: 1px solid black;
     margin: 2px;
 }
 
 button:hover {
-    background-color: slategray;
+    background-color: rgba(112, 128, 144, 0.7);
     color: honeydew;
 }
 
 menubar {
-    border-top: 1px solid slategray;
+    border-top: 1px solid rgba(112, 128, 144, 0.7);
 }
