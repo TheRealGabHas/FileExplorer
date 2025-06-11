@@ -55,11 +55,26 @@ def update_app(ex, container, search_bar)
   grid = Gtk::Grid.new
   grid.set_column_homogeneous(true)
 
-  %w[Filename Size Created].each_with_index do |name, index|
+  possible_short = {
+    "Filename": "name",
+    "Size": "size",
+    "Created": "date"
+  }
+  possible_short.keys.each_with_index do |name, index|
+    label_event_box = Gtk::EventBox.new
+    label_event_box.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
+
     label = Gtk::Label.new(name)
     label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
     label.style_context.add_class("title")
-    grid.attach(label, index, 0, 1, 1)
+    label.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
+
+    label_event_box.signal_connect "button-press-event" do |_, event|
+      ex.configuration[:short] = possible_short[name]
+      update_app(ex, container, search_bar)
+    end
+    label_event_box.add(label)
+    grid.attach(label_event_box, index, 0, 1, 1)
   end
   container.add(grid)
 

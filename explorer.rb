@@ -16,6 +16,7 @@ class Explorer
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
       :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
+      :short => "name",  # Possible values : name, size, date (default is name)
     }
   end
 
@@ -54,6 +55,12 @@ class Explorer
           # Ignore unaccessible files
         end
       end
+    end
+
+    if @configuration[:short] == "size"
+      entries.sort_by! {|entry| entry[:size]}
+    elsif @configuration[:short] == "date"
+      entries.sort_by! {|entry| entry[:date]}
     end
 
     entries
