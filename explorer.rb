@@ -16,13 +16,13 @@ class Explorer
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
       :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
-      :short => "name",  # Possible values : name, size, date (default is name)
+      :sort => "name",  # Possible values : name, size, date (default is name)
     }
   end
 
   def listdir
     entries = []
-    Dir.entries(@current_path).sort!.each do |entry|
+    Dir.entries(@current_path).each do |entry|
       # Ignore the file that starts with a dot if the settings is disabled
       if (@configuration[:show_hidden] == false) && entry.start_with?(".")
         next
@@ -56,10 +56,11 @@ class Explorer
         end
       end
     end
-
-    if @configuration[:short] == "size"
-      entries.sort_by! {|entry| entry[:size]}
-    elsif @configuration[:short] == "date"
+    if @configuration[:sort] == "name"
+      entries.sort_by! {|entry| entry[:filename]}
+    elsif @configuration[:sort] == "size"
+      entries.sort_by! {|entry| unformat_size(entry[:size]) }
+    elsif @configuration[:sort] == "date"
       entries.sort_by! {|entry| entry[:date]}
     end
 
@@ -91,6 +92,12 @@ class Explorer
       number = number / 1024
     end
     "#{'%.1f' % number} #{units[i]}o"
+  end
+
+  def unformat_size(number)
+    units = {"o": 1, "Ko": 1024, "Mo": 1048576, "Go": 1073741824, "To": 1.1*(10**12)}
+    parts = number.split(" ")
+    parts[0].to_f * units[parts[1].to_sym]
   end
 
   def compute_dir_size(path:, limit: 3)

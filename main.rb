@@ -55,12 +55,12 @@ def update_app(ex, container, search_bar)
   grid = Gtk::Grid.new
   grid.set_column_homogeneous(true)
 
-  possible_short = {
+  possible_sort = {
     "Filename": "name",
     "Size": "size",
     "Created": "date"
   }
-  possible_short.keys.each_with_index do |name, index|
+  possible_sort.keys.each_with_index do |name, index|
     label_event_box = Gtk::EventBox.new
     label_event_box.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
@@ -70,7 +70,7 @@ def update_app(ex, container, search_bar)
     label.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
     label_event_box.signal_connect "button-press-event" do |_, event|
-      ex.configuration[:short] = possible_short[name]
+      ex.configuration[:sort] = possible_sort[name]
       update_app(ex, container, search_bar)
     end
     label_event_box.add(label)
