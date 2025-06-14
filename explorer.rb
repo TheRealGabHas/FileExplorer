@@ -5,6 +5,7 @@ class Explorer
   attr_reader :history
   attr_accessor :history_pos
   attr_accessor :configuration
+  attr_reader :current_entries
 
   def initialize(path:)
     @current_path = path
@@ -18,6 +19,7 @@ class Explorer
       :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
       :sort => "name",  # Possible values : name, size, date (default is name)
     }
+    @current_entries = []
   end
 
   def listdir
@@ -56,15 +58,8 @@ class Explorer
         end
       end
     end
-    if @configuration[:sort] == "name"
-      entries.sort_by! {|entry| entry[:filename]}
-    elsif @configuration[:sort] == "size"
-      entries.sort_by! {|entry| unformat_size(entry[:size]) }
-    elsif @configuration[:sort] == "date"
-      entries.sort_by! {|entry| entry[:date]}
-    end
-
-    entries
+    @current_entries = entries
+    @current_entries
   end
 
   def chdir(next_path:, ignore_history: false)
@@ -79,6 +74,19 @@ class Explorer
       @history_pos += 1 if @history_pos < @history.length
       @current_path = next_path
       @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
+    end
+  end
+
+  def sort(reverse: false)
+    if @configuration[:sort] == "name"
+      @current_entries.sort_by! {|entry| entry[:filename]}
+    elsif @configuration[:sort] == "size"
+      @current_entries.sort_by! {|entry| unformat_size(entry[:size]) }
+    elsif @configuration[:sort] == "date"
+      @current_entries.sort_by! {|entry| entry[:date]}
+    end
+    if reverse
+      @current_entries.reverse!
     end
   end
 

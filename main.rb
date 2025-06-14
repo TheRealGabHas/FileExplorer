@@ -38,12 +38,15 @@ $css_provider.load(path: "./assets/style/main.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
-def update_app(ex, container, search_bar)
+def update_app(ex, container, search_bar, reverse_listing: false)
   # This function updates the displayed content of the explorer (the list of files/ folders)
   # it also updates the search bar content and window title
 
   # Remove the file list
   container.children.each { | child | container.remove(child) }
+
+  ex.listdir  # Does the indexing of the directory
+  ex.sort(reverse: reverse_listing)
 
   # The scrollable window that will contain the list of files
   scroll_view = Gtk::ScrolledWindow.new
@@ -70,9 +73,17 @@ def update_app(ex, container, search_bar)
     label.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
     label_event_box.signal_connect "button-press-event" do |_, event|
-      ex.configuration[:sort] = possible_sort[name]
-      update_app(ex, container, search_bar)
+      print "Sorting: #{name} "
+      if ex.configuration[:sort] == possible_sort[name]
+        update_app(ex, container, search_bar, reverse_listing: !(reverse_listing))
+        print "(reverse)\n"
+      else
+        ex.configuration[:sort] = possible_sort[name]
+        update_app(ex, container, search_bar)
+        print "(normal)\n"
+      end
     end
+
     label_event_box.add(label)
     grid.attach(label_event_box, index, 0, 1, 1)
   end
@@ -80,7 +91,7 @@ def update_app(ex, container, search_bar)
 
   # Listing the files/ directories
   max_allowed_len = 20
-  ex.listdir.each do |entry|
+  ex.current_entries.each do |entry|
     # Crop the longest names
     if entry[:filename].length > max_allowed_len
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
