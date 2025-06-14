@@ -38,7 +38,7 @@ $css_provider.load(path: "./assets/style/main.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
-def update_app(ex, container, search_bar, reverse_listing: false)
+def update_app(ex, container, search_bar)
   # This function updates the displayed content of the explorer (the list of files/ folders)
   # it also updates the search bar content and window title
 
@@ -46,7 +46,7 @@ def update_app(ex, container, search_bar, reverse_listing: false)
   container.children.each { | child | container.remove(child) }
 
   ex.listdir  # Does the indexing of the directory
-  ex.sort(reverse: reverse_listing)
+  ex.sort  # Apply the configured sorting
 
   # The scrollable window that will contain the list of files
   scroll_view = Gtk::ScrolledWindow.new
@@ -73,15 +73,15 @@ def update_app(ex, container, search_bar, reverse_listing: false)
     label.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
     label_event_box.signal_connect "button-press-event" do |_, event|
-      print "Sorting: #{name} "
+      # The clicked column is already the short criteria -> reverse
       if ex.configuration[:sort] == possible_sort[name]
-        update_app(ex, container, search_bar, reverse_listing: !(reverse_listing))
-        print "(reverse)\n"
+        ex.configuration[:reverse_sort] = !(ex.configuration[:reverse_sort])
       else
         ex.configuration[:sort] = possible_sort[name]
-        update_app(ex, container, search_bar)
-        print "(normal)\n"
+        ex.configuration[:reverse_sort] = false
       end
+
+      update_app(ex, container, search_bar)
     end
 
     label_event_box.add(label)

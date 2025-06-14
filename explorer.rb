@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 class Explorer
+  # Read Only
   attr_reader :current_path
   attr_reader :history
+  attr_reader :current_entries
+
+  # Read + Write
   attr_accessor :history_pos
   attr_accessor :configuration
-  attr_reader :current_entries
+
 
   def initialize(path:)
     @current_path = path
@@ -16,8 +20,9 @@ class Explorer
       :keep_history => true,  # Toggle memorization of the last viewed folders
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
-      :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Current not optimized and causing poor performance on large directories
+      :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Currently, not optimized and causing poor performance on large directories
       :sort => "name",  # Possible values : name, size, date (default is name)
+      :reverse_sort => false,  # Whether the result of the sorting should be reversed
     }
     @current_entries = []
   end
@@ -77,17 +82,16 @@ class Explorer
     end
   end
 
-  def sort(reverse: false)
+  def sort
     if @configuration[:sort] == "name"
-      @current_entries.sort_by! {|entry| entry[:filename]}
+      @current_entries.sort_by! {|entry| entry[:filename].downcase }  # The default alphabetical sort treat capital-starting words first (which is confusing for the end user)
     elsif @configuration[:sort] == "size"
       @current_entries.sort_by! {|entry| unformat_size(entry[:size]) }
     elsif @configuration[:sort] == "date"
       @current_entries.sort_by! {|entry| entry[:date]}
     end
-    if reverse
-      @current_entries.reverse!
-    end
+
+    @current_entries.reverse! if @configuration[:reverse_sort]
   end
 
   def format_size(number)

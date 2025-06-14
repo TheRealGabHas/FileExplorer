@@ -71,7 +71,7 @@ Icons:
 ## Known issues
 
 Here is a list of currently known unwanted behavior :
-- Ticking the `Format filesize` option refresh the display without conserving the current sorting if it's reversed
+- ~~Ticking the `Format filesize` option refresh the display without conserving the current sorting if it's reversed~~
 - There is currently no visual indicator of the applied sorting criteria
-- Sorting by `Filename` is inaccurate
+- ~~Sorting by `Filename` is inaccurate~~
 - The `<-` (previous) and `->` (next) button currently don't work
