@@ -58,28 +58,41 @@ def update_app(ex, container, search_bar)
   grid = Gtk::Grid.new
   grid.set_column_homogeneous(true)
 
-  possible_sort = {
-    "Filename": "name",
-    "Size": "size",
-    "Created": "date"
-  }
-  possible_sort.keys.each_with_index do |name, index|
+  possible_sort = %w[Filename Size Created]
+  column_labels = []
+  possible_sort.each_with_index do |name, index|
     label_event_box = Gtk::EventBox.new
     label_event_box.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
     label = Gtk::Label.new(name)
+
+    # Add an arrow corresponding to the current sorting
+    if ex.configuration[:sort] == name
+      if ex.configuration[:reverse_sort]
+        label.set_text("#{label.text} ⬇️")
+      else
+        label.set_text("#{label.text} ⬆️")
+      end
+    end
+
     label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
     label.style_context.add_class("title")
     label.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
-
+    column_labels << label
     label_event_box.signal_connect "button-press-event" do |_, event|
       # The clicked column is already the short criteria -> reverse
-      if ex.configuration[:sort] == possible_sort[name]
+      if ex.configuration[:sort] == name
         ex.configuration[:reverse_sort] = !(ex.configuration[:reverse_sort])
       else
-        ex.configuration[:sort] = possible_sort[name]
+        ex.configuration[:sort] = name
         ex.configuration[:reverse_sort] = false
       end
+
+      # Reset the style of every column header label
+      column_labels.each { |lab|
+        lab.text.gsub!("⬆️", "")
+        lab.text.gsub!("⬇️", "")
+      }
 
       update_app(ex, container, search_bar)
     end

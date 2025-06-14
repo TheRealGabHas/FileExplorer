@@ -6,6 +6,7 @@ This application is a simple file explorer made in Ruby. It relies on GTK3 for t
 > This project has been made to learn the Ruby programming language. The code may not follow the best convention and 
 > this software should probably not be used in any serious activity.
 
+
 ## Requirements
 
 The project is built with Ruby:
@@ -73,6 +74,6 @@ Icons:
 
 Here is a list of currently known unwanted behavior :
 - ~~Ticking the `Format filesize` option refresh the display without conserving the current sorting if it's reversed~~
-- There is currently no visual indicator of the applied sorting criteria
+- ~~There is currently no visual indicator of the applied sorting criteria~~
 - ~~Sorting by `Filename` is inaccurate~~
 - The `<-` (previous) and `->` (next) button currently don't work

@@ -21,7 +21,7 @@ class Explorer
       :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
       :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Currently, not optimized and causing poor performance on large directories
-      :sort => "name",  # Possible values : name, size, date (default is name)
+      :sort => "Filename",  # Possible values : Filename, Size, Created (default is name)
       :reverse_sort => false,  # Whether the result of the sorting should be reversed
     }
     @current_entries = []
@@ -83,11 +83,11 @@ class Explorer
   end
 
   def sort
-    if @configuration[:sort] == "name"
+    if @configuration[:sort] == "Filename"
       @current_entries.sort_by! {|entry| entry[:filename].downcase }  # The default alphabetical sort treat capital-starting words first (which is confusing for the end user)
-    elsif @configuration[:sort] == "size"
+    elsif @configuration[:sort] == "Size"
       @current_entries.sort_by! {|entry| unformat_size(entry[:size]) }
-    elsif @configuration[:sort] == "date"
+    elsif @configuration[:sort] == "Created"
       @current_entries.sort_by! {|entry| entry[:date]}
     end
 
