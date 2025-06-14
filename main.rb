@@ -253,7 +253,6 @@ menubar_item_history_p.signal_connect "activate" do
 end
 
 menubar_item_history_n.signal_connect "activate" do
-  # FIXME
   unless explorer.history[explorer.history_pos+1].nil?
     explorer.chdir(next_path: explorer.history[explorer.history_pos+1], ignore_history: true)
     update_app(explorer, main_box, current_path_entry)
@@ -262,8 +261,8 @@ end
 # End of the Previous/ Next visited path menu
 
 menubar.append(menubar_item_settings)
-# menubar.append(menubar_item_history_p)
-# menubar.append(menubar_item_history_n)
+menubar.append(menubar_item_history_p)
+menubar.append(menubar_item_history_n)
 
 update_app(explorer, main_box, current_path_entry)  # The initial displaying of files
 
