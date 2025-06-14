@@ -2,8 +2,9 @@
 
 This application is a simple file explorer made in Ruby. It relies on GTK3 for the graphical interface.
 
-The goal of this project is to learn Ruby.
-
+> [!NOTE]
+> This project has been made to learn the Ruby programming language. The code may not follow the best convention and 
+> this software should probably not be used in any serious activity.
 
 ## Requirements
 
