@@ -59,9 +59,18 @@ Here is a list of features that are supported by this application
   - [ ] Copy file path to clipboard
   - [ ] Copy file name to clipboard
 - [ ] Icon next to filename
+- [x] Sort columns by criteria
 
 
 ## Credits
 
 Icons:
 - [Folder](assets/icons/folder-icon-128.png) is from [Freepik](https://www.flaticon.com/authors/freepik)
+
+
+## Known issues
+
+Here is a list of currently known unwanted behavior :
+- Ticking the `Format filesize` option refresh the display without conserving the current sorting if it's reversed
+- There is currently no visual indicator of the applied sorting criteria
+- The `<-` (previous) and `->` (next) button currently don't work
