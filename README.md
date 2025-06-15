@@ -57,11 +57,12 @@ Here is a list of features that are supported by this application
 - [x] Formating file size to be more humanly-readable
 - [x] Displaying hidden files
 - [ ] Selecting information to display via toggle (size, type, creation date...)
-- [ ] Advanced file option
-  - [ ] Copy file path to clipboard
-  - [ ] Copy file name to clipboard
+- [x] Advanced file option (right-click)
+  - [x] Copy file path to clipboard
+  - [x] Copy file name to clipboard
 - [ ] Icon next to filename
 - [x] Sort columns by criteria
+- [ ] Multiple themes available
 
 
 ## Credits
