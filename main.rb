@@ -110,48 +110,57 @@ def update_app(ex, container, search_bar)
       entry[:filename] = "#{entry[:filename][0..(max_allowed_len - 3)]}..."
     end
 
-    name_field = Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0)
-    name_field.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+    name_field = Gtk::EventBox.new  # An EventBox is required to handle click event
+    name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
 
-    if entry[:type] == "file"
-      name_field.set_text("\t📄 #{entry[:filename]}")
-      name_field.style_context.add_class("file")
-    end
+    name_label = Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0)
+    name_label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
 
-    # Make the label clickable if it's a directory
-    if entry[:type] == "directory"
-      name_field = Gtk::EventBox.new  # A box is needed to handle the event. The label is placed inside.
-
-      name_label = Gtk::Label.new("\t#{entry[:filename]}").set_xalign(0.0)
-      name_label.style_context.add_provider($css_provider, Gtk::StyleProvider::PRIORITY_USER)
+    # Setting the correct icon and CSS class depending on the file type
+    case entry[:type]
+    when "file"
+      name_label.set_text("\t📄 #{entry[:filename]}")
+      name_label.style_context.add_class("file")
+    when "directory"
       name_label.set_text("\t📁 #{entry[:filename]}")
       name_label.style_context.add_class("directory")
+    when "link"
+      name_label.set_text("\t🔗 #{entry[:filename]}")
+      name_label.style_context.add_class("link")
+    else
+      name_label.set_text("\t<UNK> #{entry[:filename]}")
+    end
 
-      name_field.add_events([Gdk::EventMask::BUTTON_PRESS_MASK])
-
-      name_field.signal_connect "button-press-event" do |_, event|
-        if event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS  # If the folder is double-clicked, explore it
-          if entry[:filename] == "."  # Special case: Stay in the current directory
-          elsif entry[:filename] == ".."  #Special case: Go to the previous directory in the path
-            upper_dir = ex.current_path.split("/")
-            if upper_dir.length > 1
-              upper_dir = upper_dir[0..(upper_dir.length - 2)].join("/")
-              ex.chdir(next_path: upper_dir)
-            end
-          else  # Move to the clicked directory normally
-            ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
+    # The action to perform on click
+    name_field.signal_connect "button-press-event" do |_, event|
+      # If the clicked element is a folder and is double-clicked, explore it
+      if name_label.style_context.has_class?("directory") && event.event_type == Gdk::EventType::DOUBLE_BUTTON_PRESS
+        if entry[:filename] == "."  # Special case: Stay in the current directory
+        elsif entry[:filename] == ".."  #Special case: Go to the previous directory in the path
+          upper_dir = ex.current_path.split("/")
+          if upper_dir.length > 1
+            upper_dir = upper_dir[0..(upper_dir.length - 2)].join("/")
+            ex.chdir(next_path: upper_dir)
           end
-
-          update_app(ex, container, search_bar)
+        else  # Move to the clicked directory normally
+          ex.chdir(next_path: "#{ex.current_path}/#{entry[:filename]}")
         end
+        update_app(ex, container, search_bar)
+      elsif event.button == 3  # Event is a right-click, open the context menu
+        popover_menu = Gtk::Menu.new
+        copy_filename = Gtk::MenuItem.new(label: "Copy file name")
+        copy_filepath = Gtk::MenuItem.new(label: "Copy file path")
+        popover_menu.append(copy_filename)
+        popover_menu.append(copy_filepath)
+        popover_menu.append(Gtk::SeparatorMenuItem.new)
+        popover_menu.append(Gtk::MenuItem.new(label: "Exit"))
+
+        popover_menu.show_all
+        popover_menu.popup_at_pointer(event)
       end
-      name_field.add(name_label)
     end
 
-    if entry[:type] == "link"
-      name_field.set_text("\t🔗 #{entry[:filename]}")
-      name_field.style_context.add_class("link")
-    end
+    name_field.add(name_label)
 
     grid = Gtk::Grid.new
     grid.set_column_homogeneous(true)
