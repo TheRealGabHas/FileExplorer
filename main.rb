@@ -38,6 +38,9 @@ $css_provider.load(path: "./assets/style/main.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
+$hand_cursor = Gdk::Cursor.new(:HAND1)
+$normal_cursor = Gdk::Cursor.new(:ARROW)
+
 def create_right_click_menu(parent_label, parent_entry, current_path)
   parent_label.style_context.add_class("clicked")
 
@@ -181,6 +184,17 @@ def update_app(ex, container, search_bar)
       end
     end
 
+    name_field.signal_connect "enter-notify-event" do |widget, _|
+      name_label.style_context.add_class("hovered-label")
+      if name_label.style_context.has_class?("directory")
+        widget.window.cursor = $hand_cursor
+      end
+    end
+
+    name_field.signal_connect "leave-notify-event" do |widget, _|
+      name_label.style_context.remove_class("hovered-label")
+      widget.window.cursor = $normal_cursor
+    end
     name_field.add(name_label)
 
     grid = Gtk::Grid.new
