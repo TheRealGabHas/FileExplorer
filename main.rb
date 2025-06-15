@@ -38,6 +38,34 @@ $css_provider.load(path: "./assets/style/main.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
+def create_right_click_menu(parent_label, parent_entry, current_path)
+  parent_label.style_context.add_class("clicked")
+
+  menu = Gtk::Menu.new
+  copy_filename = Gtk::MenuItem.new(label: "📋 Copy file name")
+  copy_filepath = Gtk::MenuItem.new(label: "📋 Copy file path")
+  close = Gtk::MenuItem.new(label: "🎯 Close")
+
+  copy_filename.signal_connect "activate" do
+    $clipboard.set_text(parent_entry[:filename])
+  end
+
+  copy_filepath.signal_connect "activate" do
+    $clipboard.set_text("#{current_path}/#{parent_entry[:filename]}")
+  end
+
+  menu.append(copy_filename)
+  menu.append(copy_filepath)
+  menu.append(Gtk::SeparatorMenuItem.new)
+  menu.append(close)
+
+  menu.signal_connect "hide" do
+    parent_label.style_context.remove_class("clicked")
+  end
+
+  menu
+end
+
 def update_app(ex, container, search_bar)
   # This function updates the displayed content of the explorer (the list of files/ folders)
   # it also updates the search bar content and window title
@@ -147,14 +175,7 @@ def update_app(ex, container, search_bar)
         end
         update_app(ex, container, search_bar)
       elsif event.button == 3  # Event is a right-click, open the context menu
-        popover_menu = Gtk::Menu.new
-        copy_filename = Gtk::MenuItem.new(label: "Copy file name")
-        copy_filepath = Gtk::MenuItem.new(label: "Copy file path")
-        popover_menu.append(copy_filename)
-        popover_menu.append(copy_filepath)
-        popover_menu.append(Gtk::SeparatorMenuItem.new)
-        popover_menu.append(Gtk::MenuItem.new(label: "Exit"))
-
+        popover_menu = create_right_click_menu(name_label, entry, ex.current_path)
         popover_menu.show_all
         popover_menu.popup_at_pointer(event)
       end
