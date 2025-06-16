@@ -9,6 +9,7 @@ class Explorer
   # Read + Write
   attr_accessor :history_pos
   attr_accessor :configuration
+  attr_accessor :current_theme
 
 
   def initialize(path:)
@@ -25,6 +26,7 @@ class Explorer
       :reverse_sort => false,  # Whether the result of the sorting should be reversed
     }
     @current_entries = []
+    @current_theme = ""
   end
 
   def listdir

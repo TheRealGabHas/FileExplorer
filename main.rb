@@ -298,6 +298,28 @@ settings_submenu.append(toggle_size_estimation)
 menubar_item_settings.set_submenu(settings_submenu)
 # End of the settings menu and submenu
 
+menubar_item_themes = Gtk::MenuItem.new(label: "Themes")
+# The themes menu and submenu
+theme_submenu = Gtk::Menu.new
+
+Dir.entries("#{APP_START_DIR}/assets/style").each do |filepath|
+  if %w[. ..].include?(filepath) || File.directory?(filepath) || File.extname(filepath) != ".css"
+    next
+  end
+  theme_btn = Gtk::CheckMenuItem.new(label: "#{filepath.gsub(".css", "")}")
+
+  theme_btn.signal_connect "activate" do
+    if explorer.current_theme != filepath  # Only load the theme if it's not the current active one
+      $css_provider.load(path: "./assets/style/#{filepath}")
+      explorer.current_theme = filepath
+    end
+  end
+  theme_submenu.append(theme_btn)
+end
+
+menubar_item_themes.set_submenu(theme_submenu)
+# End of the themes menu and submenu
+
 # Previous/ Next visited path menu
 menubar_item_history_p = Gtk::MenuItem.new(label: "<-")
 menubar_item_history_n = Gtk::MenuItem.new(label: "->")
@@ -318,6 +340,7 @@ end
 # End of the Previous/ Next visited path menu
 
 menubar.append(menubar_item_settings)
+menubar.append(menubar_item_themes)
 menubar.append(menubar_item_history_p)
 menubar.append(menubar_item_history_n)
 
