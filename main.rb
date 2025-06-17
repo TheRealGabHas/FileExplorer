@@ -309,9 +309,11 @@ Dir.entries("#{APP_START_DIR}/assets/style").each do |filepath|
   theme_btn = Gtk::CheckMenuItem.new(label: "#{filepath.gsub(".css", "")}")
 
   theme_btn.signal_connect "activate" do
-    if explorer.current_theme != filepath  # Only load the theme if it's not the current active one
+    # Only load the theme if it's not the current active one
+    if explorer.current_theme != filepath
       $css_provider.load(path: "./assets/style/#{filepath}")
       explorer.current_theme = filepath
+      theme_submenu.children.each { |child| child.set_active(false) if child.is_a?(Gtk::CheckMenuItem) && child != theme_btn }
     end
   end
   theme_submenu.append(theme_btn)
