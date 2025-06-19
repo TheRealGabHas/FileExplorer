@@ -3,18 +3,18 @@
 class Explorer
   # Read Only
   attr_reader :current_path
-  attr_reader :history
   attr_reader :current_entries
 
   # Read + Write
   attr_accessor :history_pos
   attr_accessor :configuration
   attr_accessor :current_theme
+  attr_accessor :history
 
 
   def initialize(path:)
     @current_path = path
-    @history = [@current_path]
+    @history = []
     @history_pos = 0
     @configuration = {
       :show_hidden => false,  # Toggle the display of hidden files (starting with a dot)
@@ -74,14 +74,11 @@ class Explorer
     if File.exist?(next_path) && File.ftype(next_path) == "directory"
       if @configuration[:keep_history] && !ignore_history
         @history << @current_path  # Store the last path
-        if @configuration[:history_retention] < @history.length
-          @history = @history[1..]
-        end
       end
-      @history_pos += 1 if @history_pos < @history.length
       @current_path = next_path
       @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
     end
+    puts "current history: #{puts @history}"
   end
 
   def sort

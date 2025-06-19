@@ -323,12 +323,14 @@ menubar_item_themes.set_submenu(theme_submenu)
 # End of the themes menu and submenu
 
 # Previous/ Next visited path menu
-menubar_item_history_p = Gtk::MenuItem.new(label: "<")
+menubar_item_history_p = Gtk::MenuItem.new(label: "Previous")
 menubar_item_history_n = Gtk::MenuItem.new(label: ">")
 
 menubar_item_history_p.signal_connect "activate" do
   if explorer.history.length > 0
-    explorer.chdir(next_path: explorer.history[explorer.history_pos-1], ignore_history: true)
+    next_p = explorer.history[-1]
+    explorer.chdir(next_path: next_p, ignore_history: true)
+    explorer.history = explorer.history[0..-2]
     update_app(explorer, main_box, current_path_entry)
   end
 end
