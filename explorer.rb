@@ -15,11 +15,10 @@ class Explorer
   def initialize(path:)
     @current_path = path
     @history = []
-    @history_pos = 0
     @configuration = {
       :show_hidden => false,  # Toggle the display of hidden files (starting with a dot)
       :keep_history => true,  # Toggle memorization of the last viewed folders
-      :history_retention => 10,  # Number of previous visited folder that should be kept
+      # :history_retention => 10,  # Number of previous visited folder that should be kept
       :format_filesize => true,  # More human-readable file size (i.e. 4096 bytes -> 4 kilobytes)
       :estimate_folder_size => false,  # Whether to compute the size of the content inside a directory. Currently, not optimized and causing poor performance on large directories
       :sort => "Filename",  # Possible values : Filename, Size, Created (default is name)
@@ -78,7 +77,6 @@ class Explorer
       @current_path = next_path
       @current_path = next_path[0..-2] if @current_path.end_with?("/")  # Trim the trailing slash if there is one
     end
-    puts "current history: #{puts @history}"
   end
 
   def sort
