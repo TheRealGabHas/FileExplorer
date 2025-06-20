@@ -48,10 +48,10 @@ Here is the current look of the application:
 
 Here is a list of features that are supported by this application
 - [x] Enumerates files and folder
-- [ ] Navigation between directories
+- [x] Navigation between directories
   - [x] Search bar
-  - [ ] Previous/ Next button
-  - [ ] History
+  - [x] Previous button
+  - [x] History
   - [x] Click to explore a file directory
   - [x] Copy current path to clipboard (from search bar)
 - [x] Formating file size to be more humanly-readable
