@@ -44,6 +44,9 @@ ruby main.rb
 Here is the current look of the application:
 ![Software preview](assets/screens/preview-1.png)
 
+![!Theme preview](assets/screens/preview-2.png)
+
+
 ## Features
 
 Here is a list of features that are supported by this application
