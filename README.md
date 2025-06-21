@@ -60,9 +60,9 @@ Here is a list of features that are supported by this application
 - [x] Advanced file option (right-click)
   - [x] Copy file path to clipboard
   - [x] Copy file name to clipboard
-- [ ] Icon next to filename
+- [x] Icon next to filename
 - [x] Sort columns by criteria
-- [ ] Multiple themes available
+- [x] Multiple themes available
 
 
 ## Credits
@@ -77,4 +77,5 @@ Here is a list of currently known unwanted behavior :
 - ~~Ticking the `Format filesize` option refresh the display without conserving the current sorting if it's reversed~~
 - ~~There is currently no visual indicator of the applied sorting criteria~~
 - ~~Sorting by `Filename` is inaccurate~~
-- The `<-` (previous) and `->` (next) button currently don't work
+- The `>` (next) button currently doesn't work
+- The dark theme isn't looking very good
