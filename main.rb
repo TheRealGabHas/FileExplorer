@@ -34,7 +34,7 @@ $window.set_icon_list(icons)
 $window.signal_connect("destroy") { Gtk.main_quit }
 
 $css_provider = Gtk::CssProvider.new
-$css_provider.load(path: "./assets/style/main.css")
+$css_provider.load(path: "./assets/style/default-light.css")
 
 $clipboard = Gtk::Clipboard.get(Gdk::Atom.intern("CLIPBOARD", false))
 
