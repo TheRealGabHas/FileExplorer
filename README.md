@@ -82,3 +82,4 @@ Here is a list of currently known unwanted behavior :
 - ~~Sorting by `Filename` is inaccurate~~
 - The `>` (next) button currently doesn't work
 - The dark theme isn't looking very good
+- Folder indexing isn't cached. Implying that the size computation for large folder will consume time at each loading. 
